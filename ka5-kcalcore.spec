@@ -1,14 +1,14 @@
-%define		kdeappsver	18.12.1
+%define		kdeappsver	19.04.1
 %define		qtver		5.9.0
 %define		kaname		kcalcore
 Summary:	kcalcore
 Name:		ka5-%{kaname}
-Version:	18.12.1
+Version:	19.04.1
 Release:	1
 License:	GPL v2+/LGPL v2.1+
 Group:		X11/Libraries
 Source0:	http://download.kde.org/stable/applications/%{kdeappsver}/src/%{kaname}-%{version}.tar.xz
-# Source0-md5:	dec226c481d4735d3b0d47d8de7a1363
+# Source0-md5:	8719a91a0a333d4da2ede7e478cd3c20
 URL:		http://www.kde.org/
 BuildRequires:	Qt5Core-devel >= %{qtver}
 BuildRequires:	Qt5Gui-devel
@@ -16,6 +16,7 @@ BuildRequires:	Qt5Test-devel >= 5.9.0
 BuildRequires:	cmake >= 2.8.12
 BuildRequires:	kf5-extra-cmake-modules >= 5.53.0
 BuildRequires:	libical-devel >= 2.0
+BuildRequires:	ninja
 BuildRequires:	qt5-build >= %{qtver}
 BuildRequires:	rpmbuild(macros) >= 1.164
 BuildRequires:	shared-mime-info
@@ -51,15 +52,15 @@ Pliki nagłówkowe dla programistów używających %{kaname}.
 %build
 install -d build
 cd build
-%cmake \
+%cmake -G Ninja \
+	-DHTML_INSTALL_DIR=%{_kdedocdir} \
 	-DKDE_INSTALL_USE_QT_SYS_PATHS=ON \
 	..
-%{__make}
+%ninja_build
 
 %install
 rm -rf $RPM_BUILD_ROOT
-%{__make} -C build install \
-	DESTDIR=$RPM_BUILD_ROOT
+%ninja_install -C build
 
 %clean
 rm -rf $RPM_BUILD_ROOT
